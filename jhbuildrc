@@ -1,0 +1,5 @@
+# -*- mode: python -*-
+# -*- coding: utf-8 -*-
+
+os.environ['CFLAGS'] = '-Wall -g -O0'
+os.environ['CXXFLAGS'] = '-Wall -g -O0'

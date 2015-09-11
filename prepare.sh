@@ -92,3 +92,16 @@ if [ -n "${logout_needed}" ]
 then
     echo "Log out and log in again to apply changes in .bash_profile"
 fi
+
+echo 'Remember to set following git configuration:'
+echo
+echo 'git config --global user.name "Krzesimir Nowak"'
+echo 'git config --global user.email qdlacz@gmail.com'
+echo 'git config --global core.editor emacs-nox'
+echo 'git config --global push.default simple'
+echo 'git config --global sendemail.from "Krzesimir Nowak <qdlacz@gmail.com>"'
+echo 'git config --global sendemail.smtpserver smtp.gmail.com'
+echo 'git config --global sendemail.smtpuser qdlacz@gmail.com'
+echo 'git config --global sendemail.smtpencryption tls'
+echo 'git config --global sendemail.smtpserverport 587'
+echo 'git config --global credential.helper gnome-keyring'

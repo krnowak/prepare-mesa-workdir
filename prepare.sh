@@ -23,6 +23,7 @@ git clone git://anongit.freedesktop.org/mesa/mesa src
 pushd src
 git remote add krnowak git@github.com:krnowak/mesa.git
 git fetch krnowak
+git config sendemail.to 'mesa-dev@lists.freedesktop.org'
 popd # src
 ln -s ../mesaconf.sh c.sh
 popd # mesadir
@@ -40,6 +41,7 @@ git clone git://anongit.freedesktop.org/piglit piglit
 push piglit
 git remote add krnowak git@github.com:krnowak/piglit.git
 git fetch krnowak
+git config sendemail.to 'piglit@lists.freedesktop.org'
 popd $ # piglit
 popd # ogldir
 

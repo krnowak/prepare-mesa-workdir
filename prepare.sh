@@ -57,12 +57,14 @@ then
 fi
 cp "${prepdir}/oglshell.sh" "${bindir}"
 
+logout_needed=
 if grep --silent -e '\(^\|[[:space:]]\)PATH=.*'"${rawbindir}"'\($\|:\)' "${bprof}"
 then
     :
 else
     echo 'PATH=$PATH:$HOME/bin' >> "${bprof}"
     echo 'export PATH' >> "${bprof}"
+    logout_needed=x
 fi
 
 # start building stuff
@@ -79,3 +81,14 @@ popd # jhbuilddir
 
 cp "${prepdir}/jhbuildrc" "${usrdir}/jhbuildrc"
 "${usrdir}/bin/jhbuild" --file "${usrdir}/jhbuildrc" run "${prepdir}/build_in_oglshell.sh" "${ogldir}"
+
+echo
+echo
+echo
+echo
+echo Done
+
+if [ -n "${logout_needed}" ]
+then
+    echo "Log out and log in again to apply changes in .bash_profile"
+fi

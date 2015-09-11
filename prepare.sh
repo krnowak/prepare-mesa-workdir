@@ -8,6 +8,8 @@ set -e -v -x
 prepdir="$(dirname $0)"
 . "${prepdir}/variables.sh"
 
+sudo dnf install $(cat "${prepdir}/packages")
+
 # clone and copy stuff
 
 mkdir -p "${ogldir}"

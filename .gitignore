@@ -1,1 +1,8 @@
 *~
+
+/configure
+/autom4te.cache
+/config.status
+/config.log
+/variables.sh
+/jhbuildrc

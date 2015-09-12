@@ -1,5 +1,7 @@
 # -*- mode: python -*-
 # -*- coding: utf-8 -*-
 
+prefix = '@USRDIR@'
+
 os.environ['CFLAGS'] = '-Wall -g -O0'
 os.environ['CXXFLAGS'] = '-Wall -g -O0'

@@ -8,7 +8,9 @@ set -e -v -x
 prepdir="$(dirname $0)"
 . "${prepdir}/variables.sh"
 
-sudo dnf install $(cat "${prepdir}/packages")
+pushd "${distrodir}"
+./install_pkgs.sh
+popd # distrodir
 
 # clone and copy stuff
 
@@ -21,8 +23,8 @@ mkdir "${mesadir}"
 pushd "${mesadir}"
 git clone git://anongit.freedesktop.org/mesa/mesa src
 pushd src
-git remote add krnowak git@github.com:krnowak/mesa.git
-git fetch krnowak
+git remote add "${remote_name}" "${custom_mesa}"
+git fetch "${remote_name}"
 git config sendemail.to 'mesa-dev@lists.freedesktop.org'
 popd # src
 ln -s ../mesaconf.sh c.sh
@@ -38,16 +40,16 @@ popd # gludir
 
 pushd "${ogldir}"
 git clone git://anongit.freedesktop.org/piglit piglit
-push piglit
-git remote add krnowak git@github.com:krnowak/piglit.git
-git fetch krnowak
+pushd piglit
+git remote add "${remote_name}" "${custom_piglit}"
+git fetch "${remote_name}"
 git config sendemail.to 'piglit@lists.freedesktop.org'
-popd $ # piglit
+popd # piglit
 popd # ogldir
 
 mkdir "${jhbuilddir}"
 pushd "${jhbuilddir}"
-git clone ssh://krnowak@git.gnome.org/git/jhbuild src
+git clone https://git.gnome.org/browse/jhbuild src
 ln -s ../jhbuildconf.sh c.sh
 popd # jhbuilddir
 
@@ -57,11 +59,16 @@ then
 fi
 cp "${prepdir}/oglshell.sh" "${bindir}"
 
+check_bash_profile() {
+    if grep --silent -e '\(^\|[[:space:]]\)PATH=.*'"${1}"'\($\|:\)' "${bprof}"
+    then
+        echo 'f'
+    fi
+}
+
 logout_needed=
-if grep --silent -e '\(^\|[[:space:]]\)PATH=.*'"${rawbindir}"'\($\|:\)' "${bprof}"
+if [ -z "$(check_bash_profile "${rawbindir}")$(check_bash_profile "${brawbindir}")" ]
 then
-    :
-else
     echo 'PATH=$PATH:$HOME/bin' >> "${bprof}"
     echo 'export PATH' >> "${bprof}"
     logout_needed=x
@@ -80,28 +87,21 @@ popd # build
 popd # jhbuilddir
 
 cp "${prepdir}/jhbuildrc" "${usrdir}/jhbuildrc"
-"${usrdir}/bin/jhbuild" --file "${usrdir}/jhbuildrc" run "${prepdir}/build_in_oglshell.sh" "${ogldir}"
+"${usrdir}/bin/jhbuild" --file "${usrdir}/jhbuildrc" run "${prepdir}/build_in_oglshell.sh"
+
+# +v -> do not print not expanded commands
+# +x -> do not print expanded commands
+set +v +x
 
 echo
 echo
 echo
 echo
-echo Done
+echo 'Done'
 
 if [ -n "${logout_needed}" ]
 then
     echo "Log out and log in again to apply changes in .bash_profile"
 fi
 
-echo 'Remember to set following git configuration:'
-echo
-echo 'git config --global user.name "Krzesimir Nowak"'
-echo 'git config --global user.email qdlacz@gmail.com'
-echo 'git config --global core.editor emacs-nox'
-echo 'git config --global push.default simple'
-echo 'git config --global sendemail.from "Krzesimir Nowak <qdlacz@gmail.com>"'
-echo 'git config --global sendemail.smtpserver smtp.gmail.com'
-echo 'git config --global sendemail.smtpuser qdlacz@gmail.com'
-echo 'git config --global sendemail.smtpencryption tls'
-echo 'git config --global sendemail.smtpserverport 587'
-echo 'git config --global credential.helper gnome-keyring'
+echo 'Remember to set up git send-email configuration'
